@@ -12,4 +12,5 @@ ENV PORT=3333
 
 EXPOSE 3333
 
-CMD ["node", "--experimental-strip-types", "src/server.ts"]
+CMD ["npm", "start"]
+

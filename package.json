@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "node --experimental-strip-types --env-file=.env --watch --no-warnings src/server.ts",
-    "start": "node src/server.ts"
+    "start": "npx prisma generate && node --experimental-strip-types src/server.ts"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
