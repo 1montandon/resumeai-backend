@@ -9,7 +9,8 @@ primary_region = 'iad'
 [build]
 
 [deploy]
-  release_command = 'npx prisma migrate deploy'
+  release_command = "npx prisma generate && npx prisma migrate deploy"
+
 
 [http_service]
   internal_port = 3333
