@@ -2,19 +2,19 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# Install dependencies first (better layer caching)
 COPY package*.json ./
+RUN npm ci
 
-RUN npm install
+# Copy source
+COPY . .
 
-COPY . . 
+# Build app
+RUN npm run build && npx prisma generate
 
-ENV PORT=3000
-ENV DATABASE_URL='postgresql://resumeai-DB_owner:npg_3lKZI7koYuJz@ep-black-voice-a4vb5kiz-pooler.us-east-1.aws.neon.tech/resumeai-DB?sslmode=require&channel_binding=require'
-ENV GOOGLE_GENERATIVE_AI_API_KEY=AIzaSyCTyHJeHieTgIUDa1LlFY_Zus8OYP4Uwrc
-ENV JWT_SECRET=1313GALO
-EXPOSE 3000
+# App runs on 3333 (must match fly.toml internal_port)
+ENV PORT=3333
 
-RUN npm run build && \
-npx prisma generate
+EXPOSE 3333
 
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]
