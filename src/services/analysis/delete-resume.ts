@@ -1,10 +1,10 @@
-import HttpError from '../../error/error.ts';
-import prisma from '../../prisma/client.ts';
-import type { Analysis } from '../../types/analysis.ts';
+import HttpError from "../../error/error.ts";
+import prisma from "../../lib/prisma.ts";
+import type { Analysis } from "../../types/analysis.ts";
 
 export async function deleteSingleAnalysis(
   userId: string,
-  analysisId: string
+  analysisId: string,
 ): Promise<Analysis> {
   const analysis = await prisma.analyses.delete({
     where: {
@@ -13,7 +13,7 @@ export async function deleteSingleAnalysis(
     },
   });
   if (!analysis) {
-    throw new HttpError(404, 'No Analysis found with that ID');
+    throw new HttpError(404, "No Analysis found with that ID");
   }
   return analysis;
 }

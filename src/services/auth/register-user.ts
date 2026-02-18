@@ -1,7 +1,7 @@
-import bcrypt from 'bcrypt';
-import HttpError from '../../error/error.ts';
-import prisma from '../../prisma/client.ts';
-import type { RegisterUser, RegisterUserResponse } from '../../types/user.ts';
+import bcrypt from "bcrypt";
+import HttpError from "../../error/error.ts";
+import prisma from "../../lib/prisma.ts";
+import type { RegisterUser, RegisterUserResponse } from "../../types/user.ts";
 
 export async function registerUser({
   username,
@@ -18,7 +18,7 @@ export async function registerUser({
   });
 
   if (existingUser) {
-    throw new HttpError(409, 'User already exists'); // 409 Conflict
+    throw new HttpError(409, "User already exists"); // 409 Conflict
   }
 
   // Hash password

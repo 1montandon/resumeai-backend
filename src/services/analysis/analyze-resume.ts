@@ -1,7 +1,7 @@
 import { PDFParse } from "pdf-parse";
 import { handleUpload } from "../../config/cloudinary.ts";
 import { lammaAnalyzeResume } from "../../config/ollama.ts";
-import prisma from "../../prisma/client.ts";
+import prisma from "../../lib/prisma.ts";
 import type { Analysis } from "../../types/analysis.ts";
 
 export async function analyzeResume(
