@@ -13,7 +13,7 @@
   "description": "",
   "dependencies": {
     "@prisma/client": "^6.10.1",
-    "ai": "^4.3.16",
+    "ai": "^6.0.91",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
