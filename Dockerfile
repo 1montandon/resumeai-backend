@@ -10,7 +10,7 @@ RUN npm ci
 COPY . .
 
 # Build app
-RUN npm run build && npx prisma generate
+RUN npx prisma generate
 
 # App runs on 3333 (must match fly.toml internal_port)
 ENV PORT=3333
