@@ -1,18 +1,24 @@
-import { handleUpload } from '../../config/cloudinary.ts';
-import { geminiAnalyzeResume } from '../../config/geminiai.ts';
-import prisma from '../../prisma/client.ts';
-import type { Analysis } from '../../types/analysis.ts';
+import { PDFParse } from "pdf-parse";
+import { handleUpload } from "../../config/cloudinary.ts";
+import { lammaAnalyzeResume } from "../../config/ollama.ts";
+import prisma from "../../prisma/client.ts";
+import type { Analysis } from "../../types/analysis.ts";
 
 export async function analyzeResume(
   resumeFile: Express.Multer.File,
   jobDescription: string,
-  userId: string
+  userId: string,
 ): Promise<Analysis> {
   const resumeBuffer = resumeFile.buffer;
 
-  const aiAnalysis = await geminiAnalyzeResume(resumeFile, jobDescription);
-  const parsedResult = JSON.parse(aiAnalysis);
-  const b64 = resumeBuffer.toString('base64');
+  const parsedResume = new PDFParse({ data: resumeBuffer });
+  const resumeText = await (await parsedResume.getText()).text;
+
+  console.log(resumeText);
+
+  const aiAnalysis = await lammaAnalyzeResume(resumeText, jobDescription);
+
+  const b64 = resumeBuffer.toString("base64");
   const dataURI = `data:${resumeFile.mimetype};base64,${b64}`;
   const cldRes = await handleUpload(dataURI);
 
@@ -20,10 +26,10 @@ export async function analyzeResume(
     data: {
       jobDescription,
       resumeUrl: cldRes.url,
-      score: parsedResult.compatibility, // Usa o compatibility do parsedResult
-      strengths: JSON.stringify(parsedResult.strong), // Converte array para string JSON
-      weaknesses: JSON.stringify(parsedResult.weaks), // Converte array para string JSON
-      overview: parsedResult.summary, // Usa o summary do parsedResult
+      score: aiAnalysis.compatibility, // Usa o compatibility do aiAnalysis
+      strengths: JSON.stringify(aiAnalysis.strong), // Converte array para string JSON
+      weaknesses: JSON.stringify(aiAnalysis.weaks), // Converte array para string JSON
+      overview: aiAnalysis.summary, // Usa o summary do aiAnalysis
       user: {
         connect: { id: userId },
       },

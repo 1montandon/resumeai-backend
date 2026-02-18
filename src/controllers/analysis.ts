@@ -13,6 +13,7 @@ export const analyzeResumeController = async (
 ) => {
   if (!req.userID) {
     throw new HttpError(401, 'Unauthorized!');
+    // req.userID = '1'
   }
   if (!req?.file) {
     throw new HttpError(400, 'No file Uploaded!');

@@ -1,13 +1,13 @@
-import { GoogleGenAI, Type } from '@google/genai';
-import { env } from '../env.ts';
+import { GoogleGenAI, Type } from "@google/genai";
+import { env } from "../env.ts";
 
 const ai = new GoogleGenAI({ apiKey: env.GEMINI_API_KEY });
 
-const modelName = 'gemini-2.5-flash';
+const modelName = "gemini-2.5-flash";
 
 export async function geminiAnalyzeResume(
-  resumeFile: Express.Multer.File,
-  jobDescription: string
+  resumeText: string,
+  jobDescription: string,
 ) {
   const prompt = `
 You are an expert AI assistant specializing in job application analysis. Your primary function is to assess a candidate's resume against a specific job description and provide a precise, structured analysis.
@@ -24,7 +24,7 @@ ${jobDescription}
 
   const resumeFileData = {
     inlineData: {
-      data: resumeFile.buffer.toString('base64'),
+      data: resumeFile.buffer.toString("base64"),
       mimeType: resumeFile.mimetype,
     },
   };
@@ -36,7 +36,7 @@ ${jobDescription}
     model: modelName,
     contents,
     config: {
-      responseMimeType: 'application/json',
+      responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
         properties: {
@@ -46,7 +46,7 @@ ${jobDescription}
             minItems: 3,
             maxItems: 3,
             description:
-              'An array of exactly 3 strings, each describing a strong point highly relevant to the job description.',
+              "An array of exactly 3 strings, each describing a strong point highly relevant to the job description.",
           },
           weaks: {
             type: Type.ARRAY,
@@ -54,14 +54,14 @@ ${jobDescription}
             minItems: 3,
             maxItems: 3,
             description:
-              'An array of exactly 3 strings, each describing a weak point or area for improvement relative to the job.',
+              "An array of exactly 3 strings, each describing a weak point or area for improvement relative to the job.",
           },
           compatibility: {
             type: Type.NUMBER,
             minimum: 0.0,
             maximum: 1.0,
             description:
-              'A floating-point number between 0.0 and 1.0 representing the compatibility score.',
+              "A floating-point number between 0.0 and 1.0 representing the compatibility score.",
           },
           summary: {
             type: Type.STRING,
@@ -73,7 +73,7 @@ ${jobDescription}
     },
   });
 
-  const responseText = result.text
+  const responseText = result.text;
 
-  return responseText
+  return responseText;
 }
